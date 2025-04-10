@@ -29,4 +29,14 @@ public class Season {
 
     @OneToMany(mappedBy = "season")
     private List<Episode> episodes;
+
+    public Season(Integer id, Integer releaseDate, String trailerUrl, String photoUrl, Integer seasonNumber, TVShow entity) {
+        this.id = id;
+        this.releaseDate = releaseDate;
+        this.trailerUrl = trailerUrl;
+        this.photoUrl = photoUrl;
+        this.seasonNumber = seasonNumber;
+        this.tvShow = entity;
+
+    }
 }

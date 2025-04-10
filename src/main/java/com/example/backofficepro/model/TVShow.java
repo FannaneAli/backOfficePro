@@ -16,4 +16,8 @@ public class TVShow extends Media {
     @OneToMany(mappedBy = "tvShow")
     private List<Season> seasons;
 
+    public TVShow(Integer id, String title, Integer rating, String description, String photoUrl, String releaseDate, List<Season> entityList) {
+        super(id, title, rating, description, photoUrl, releaseDate);
+        this.seasons = entityList;
+    }
 }

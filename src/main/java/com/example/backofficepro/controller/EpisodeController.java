@@ -1,77 +1,58 @@
 package com.example.backofficepro.controller;
 
-import com.example.backofficepro.model.Episode;
-import com.example.backofficepro.model.Season;
-import com.example.backofficepro.service.EpisodeService;
+import com.example.backofficepro.dto.EpisodeDTO;
+import com.example.backofficepro.orchestration.EpisodeOrchestration;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Optional;
 
 @RestController
-@RequestMapping("/api/episodes") // Base URL for all episode-related endpoints
+@RequestMapping("/api/episodes")
 public class EpisodeController {
 
-    private final EpisodeService episodeService;
-
     @Autowired
-    public EpisodeController(EpisodeService episodeService) {
-        this.episodeService = episodeService;
+    private EpisodeOrchestration episodeOrchestration;
+
+    // Récupérer un épisode par ID
+    @GetMapping("/{id}")
+    public ResponseEntity<EpisodeDTO> getEpisodeById(@PathVariable Long id) {
+        EpisodeDTO episodeDTO = episodeOrchestration.getEpisodeById(id);
+        if (episodeDTO != null) {
+            return new ResponseEntity<>(episodeDTO, HttpStatus.OK);
+        }
+        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 
-    // Endpoint pour ajouter un nouvel épisode
+    // Récupérer tous les épisodes
+    @GetMapping
+    public List<EpisodeDTO> getAllEpisodes() {
+        return episodeOrchestration.getAllEpisodes();
+    }
+
+    // Créer un nouvel épisode
     @PostMapping
-    public ResponseEntity<Episode> addEpisode(@RequestBody Episode episode) {
-        Episode savedEpisode = episodeService.addEpisode(episode);
-        return new ResponseEntity<>(savedEpisode, HttpStatus.CREATED);
+    public ResponseEntity<EpisodeDTO> createEpisode(@RequestBody EpisodeDTO episodeDTO) {
+        EpisodeDTO createdEpisode = episodeOrchestration.createEpisode(episodeDTO);
+        return new ResponseEntity<>(createdEpisode, HttpStatus.CREATED);
     }
 
-    // Endpoint pour mettre à jour un épisode existant
+    // Mettre à jour un épisode
     @PutMapping("/{id}")
-    public ResponseEntity<Episode> updateEpisode(@PathVariable Integer id, @RequestBody Episode episode) {
-        episode.setId(id);
-        Episode updatedEpisode = episodeService.updateEpisode(episode);
+    public ResponseEntity<EpisodeDTO> updateEpisode(@PathVariable Long id, @RequestBody EpisodeDTO episodeDTO) {
+        EpisodeDTO updatedEpisode = episodeOrchestration.updateEpisode(id, episodeDTO);
         if (updatedEpisode != null) {
             return new ResponseEntity<>(updatedEpisode, HttpStatus.OK);
-        } else {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND); // Si l'épisode n'existe pas
         }
+        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 
-    // Endpoint pour supprimer un épisode
+    // Supprimer un épisode
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteEpisode(@PathVariable Integer id) {
-        episodeService.deleteEpisode(id);
-        return new ResponseEntity<>(HttpStatus.NO_CONTENT); // Retourne un code HTTP 204 (No Content)
-    }
-
-    // Endpoint pour obtenir un épisode par son ID
-    @GetMapping("/{id}")
-    public ResponseEntity<Episode> getEpisodeById(@PathVariable Integer id) {
-        Optional<Episode> episode = episodeService.getEpisodeById(id);
-        return episode.map(ResponseEntity::ok).orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
-    }
-
-    // Endpoint pour obtenir tous les épisodes d'une saison spécifique
-    @GetMapping("/season/{seasonId}")
-    public ResponseEntity<List<Episode>> getEpisodesBySeason(@PathVariable Integer seasonId) {
-        Season season = new Season();
-        season.setId(seasonId);  // Assurez-vous que la saison existe dans la base de données avant de l'utiliser.
-        List<Episode> episodes = episodeService.getEpisodesBySeason(season);
-        if (!episodes.isEmpty()) {
-            return new ResponseEntity<>(episodes, HttpStatus.OK);
-        } else {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND); // Aucun épisode trouvé pour cette saison
-        }
-    }
-
-    // Endpoint pour obtenir la liste de tous les épisodes
-    @GetMapping
-    public ResponseEntity<List<Episode>> getAllEpisodes() {
-        List<Episode> episodes = episodeService.getAllEpisodes();
-        return new ResponseEntity<>(episodes, HttpStatus.OK);
+    public ResponseEntity<Void> deleteEpisode(@PathVariable Long id) {
+        episodeOrchestration.deleteEpisode(id);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 }

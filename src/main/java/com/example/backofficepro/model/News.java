@@ -25,20 +25,19 @@ public class News {
     private String category;
     private String author;
 
+    @OneToMany(mappedBy = "news")
+    private List<ActorNewsAssociation> actorAssociations;  // Updated to association class
 
+    @OneToMany(mappedBy = "news")
+    private List<MediaNewsAssociation> mediaAssociations;  // Updated to association class
 
-    @ManyToMany
-    @JoinTable(
-            name = "actor_news", // Table de jointure entre Actor et News
-            joinColumns = @JoinColumn(name = "news_id"), // Clé étrangère pour News
-            inverseJoinColumns = @JoinColumn(name = "actor_id")) // Clé étrangère pour Actor
-    private List<Actor> actors;
+    public News(Integer id, String title, String content, LocalDate publishDate, String category, String author) {
+        this.id = id;
+        this.title = title;
+        this.content = content;
+        this.publishDate = publishDate;
+        this.category = category;
+        this.author = author;
 
-    // Modifiez cette relation pour utiliser Media au lieu de TVShow
-    @ManyToMany
-    @JoinTable(
-            name = "news_media",
-            joinColumns = @JoinColumn(name = "news_id"),
-            inverseJoinColumns = @JoinColumn(name = "media_id"))
-    private List<Media> relatedMedia;  // Liste de Media au lieu de TVShow
+    }
 }

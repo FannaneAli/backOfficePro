@@ -23,4 +23,10 @@ public class Category {
 
     @OneToMany(mappedBy = "category")  // Le mappedBy fait référence à 'category' dans Media (TVShow, TVMovie)
     private List<Media> mediaList;  // Changez ici en List<Media>
+
+    public Category(Integer id, String name, String description) {
+        this.id = id;
+        this.name = name;
+        this.description = description;
+    }
 }

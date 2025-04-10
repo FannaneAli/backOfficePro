@@ -1,74 +1,58 @@
 package com.example.backofficepro.controller;
 
-import com.example.backofficepro.model.Category;
-import com.example.backofficepro.service.CategoryService;
+import com.example.backofficepro.dto.CategoryDTO;
+import com.example.backofficepro.orchestration.CategoryOrchestration;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Optional;
 
 @RestController
-@RequestMapping("/api/categories") // Base URL for all category-related endpoints
+@RequestMapping("/api/categories")
 public class CategoryController {
 
-    private final CategoryService categoryService;
-
     @Autowired
-    public CategoryController(CategoryService categoryService) {
-        this.categoryService = categoryService;
+    private CategoryOrchestration categoryOrchestration;
+
+    // Récupérer une catégorie par ID
+    @GetMapping("/{id}")
+    public ResponseEntity<CategoryDTO> getCategoryById(@PathVariable Long id) {
+        CategoryDTO categoryDTO = categoryOrchestration.getCategoryById(id);
+        if (categoryDTO != null) {
+            return new ResponseEntity<>(categoryDTO, HttpStatus.OK);
+        }
+        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 
-    // Endpoint pour ajouter une nouvelle catégorie
+    // Récupérer toutes les catégories
+    @GetMapping
+    public List<CategoryDTO> getAllCategories() {
+        return categoryOrchestration.getAllCategories();
+    }
+
+    // Créer une nouvelle catégorie
     @PostMapping
-    public ResponseEntity<Category> addCategory(@RequestBody Category category) {
-        Category savedCategory = categoryService.addCategory(category);
-        return new ResponseEntity<>(savedCategory, HttpStatus.CREATED);
+    public ResponseEntity<CategoryDTO> createCategory(@RequestBody CategoryDTO categoryDTO) {
+        CategoryDTO createdCategory = categoryOrchestration.createCategory(categoryDTO);
+        return new ResponseEntity<>(createdCategory, HttpStatus.CREATED);
     }
 
-    // Endpoint pour mettre à jour une catégorie existante
+    // Mettre à jour une catégorie
     @PutMapping("/{id}")
-    public ResponseEntity<Category> updateCategory(@PathVariable Integer id, @RequestBody Category category) {
-        category.setId(id);
-        Category updatedCategory = categoryService.updateCategory(category);
+    public ResponseEntity<CategoryDTO> updateCategory(@PathVariable Long id, @RequestBody CategoryDTO categoryDTO) {
+        CategoryDTO updatedCategory = categoryOrchestration.updateCategory(id, categoryDTO);
         if (updatedCategory != null) {
             return new ResponseEntity<>(updatedCategory, HttpStatus.OK);
-        } else {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND); // Si la catégorie n'est pas trouvée
         }
+        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 
-    // Endpoint pour supprimer une catégorie
+    // Supprimer une catégorie
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteCategory(@PathVariable Integer id) {
-        categoryService.deleteCategory(id);
-        return new ResponseEntity<>(HttpStatus.NO_CONTENT); // Retourne un code HTTP 204 (No Content)
-    }
-
-    // Endpoint pour obtenir une catégorie par son identifiant
-    @GetMapping("/{id}")
-    public ResponseEntity<Category> getCategoryById(@PathVariable Integer id) {
-        Optional<Category> category = categoryService.getCategoryById(id);
-        return category.map(ResponseEntity::ok).orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
-    }
-
-    // Endpoint pour rechercher des catégories par leur nom
-    @GetMapping("/search")
-    public ResponseEntity<List<Category>> getCategoriesByName(@RequestParam String name) {
-        List<Category> categories = categoryService.getCategoriesByName(name);
-        if (!categories.isEmpty()) {
-            return new ResponseEntity<>(categories, HttpStatus.OK);
-        } else {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND); // Aucun résultat trouvé
-        }
-    }
-
-    // Endpoint pour obtenir la liste de toutes les catégories
-    @GetMapping
-    public ResponseEntity<List<Category>> getAllCategories() {
-        List<Category> categories = categoryService.getAllCategories();
-        return new ResponseEntity<>(categories, HttpStatus.OK);
+    public ResponseEntity<Void> deleteCategory(@PathVariable Long id) {
+        categoryOrchestration.deleteCategory(id);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 }

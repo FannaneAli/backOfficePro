@@ -27,4 +27,14 @@ public class Episode {
     @ManyToOne
     @JoinColumn(name = "season_id")
     private Season season;          // La saison à laquelle appartient cet épisode
+
+    public Episode(Integer id, Integer episodeNumber, String title, String description, String photoUrl, Integer duration, String videoUrl) {
+        this.id = id;
+        this.episodeNumber = episodeNumber;
+        this.title = title;
+        this.description = description;
+        this.photoUrl = photoUrl;
+        this.duration = duration;
+        this.videoUrl = videoUrl;
+    }
 }

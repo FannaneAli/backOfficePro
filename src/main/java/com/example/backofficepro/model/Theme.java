@@ -21,7 +21,12 @@ public class Theme {
     private String name;
     private String description;
 
-    // Changement de OneToMany à ManyToMany
-    @ManyToMany(mappedBy = "themes")  // La relation inverse via 'themes' dans Media
-    private List<Media> medias;  // Liste des médias associés à ce thème
+    @OneToMany(mappedBy = "theme")
+    private List<MediaThemeAssociation> mediaAssociations;  // Updated to association class
+
+    public Theme(Integer id, String name, String description) {
+        this.id = id;
+        this.name = name;
+        this.description = description;
+    }
 }

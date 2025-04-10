@@ -1,11 +1,14 @@
 package com.example.backofficepro.model;
 
-import com.fasterxml.jackson.annotation.JsonManagedReference;  // Importer JsonManagedReference
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import jakarta.persistence.*;
+import java.io.Serializable;
 import java.util.List;
 
 @Entity
@@ -15,7 +18,10 @@ import java.util.List;
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 @DiscriminatorColumn(name = "media_type", discriminatorType = DiscriminatorType.STRING)
 @Table(name = "media")
-public class Media {
+@JsonIdentityInfo(
+        generator = ObjectIdGenerators.PropertyGenerator.class,
+        property = "id")
+public class Media implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -27,44 +33,33 @@ public class Media {
     @JoinColumn(name = "category_id")
     private Category category;
 
-    @ManyToMany
-    @JoinTable(
-            name = "media_theme",
-            joinColumns = @JoinColumn(name = "media_id"),
-            inverseJoinColumns = @JoinColumn(name = "theme_id"))
-    private List<Theme> themes;
+    @OneToMany(mappedBy = "media")
+    private List<MediaThemeAssociation> themeAssociations;  // Updated to association class
 
     private Integer rating;
     private String description;
     private String photoUrl;
     private String releaseDate;
 
-    // Ajout de @JsonManagedReference pour gérer la sérialisation dans Media
-    @ManyToMany
-    @JoinTable(
-            name = "media_actor",
-            joinColumns = @JoinColumn(name = "media_id"),
-            inverseJoinColumns = @JoinColumn(name = "actor_id"))
-    @JsonManagedReference // Cette annotation gère la sérialisation des acteurs dans Media
-    private List<Actor> cast;
+    @JsonManagedReference
+    @OneToMany(mappedBy = "media")
+    private List<MediaActorAssociation> actorAssociations;  // Updated to association class
 
     private String director;
     private String productionCompany;
     private String categoryAge;
     private String language;
 
-    @ManyToMany
-    @JoinTable(
-            name = "media_related_media",
-            joinColumns = @JoinColumn(name = "media_id"),
-            inverseJoinColumns = @JoinColumn(name = "related_media_id"))
-    @JsonManagedReference // Sérialisation gérée pour les médias similaires
-    private List<Media> relatedMedia;
+    @OneToMany(mappedBy = "media")
+    private List<MediaNewsAssociation> newsAssociations;  // Updated to association class
 
-    @ManyToMany
-    @JoinTable(
-            name = "media_news",
-            joinColumns = @JoinColumn(name = "media_id"),
-            inverseJoinColumns = @JoinColumn(name = "news_id"))
-    private List<News> news;
+    public Media(Integer id, String title, Integer rating, String description, String photoUrl, String releaseDate) {
+        this.id = id;
+        this.title = title;
+        this.rating = rating;
+        this.description = description;
+        this.photoUrl = photoUrl;
+        this.releaseDate = releaseDate;
+
+    }
 }

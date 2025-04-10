@@ -1,74 +1,58 @@
 package com.example.backofficepro.controller;
 
-import com.example.backofficepro.model.Actor;
-import com.example.backofficepro.service.ActorService;
+import com.example.backofficepro.dto.ActorDTO;
+import com.example.backofficepro.orchestration.ActorOrchestration;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Optional;
 
 @RestController
-@RequestMapping("/api/actors") // Base URL for all actor-related endpoints
+@RequestMapping("/api/actors")
 public class ActorController {
 
-    private final ActorService actorService;
-
     @Autowired
-    public ActorController(ActorService actorService) {
-        this.actorService = actorService;
+    private ActorOrchestration actorOrchestration;
+
+    // Récupérer un acteur par ID
+    @GetMapping("/{id}")
+    public ResponseEntity<ActorDTO> getActorById(@PathVariable Long id) {
+        ActorDTO actorDTO = actorOrchestration.getActorById(id);
+        if (actorDTO != null) {
+            return new ResponseEntity<>(actorDTO, HttpStatus.OK);
+        }
+        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 
-    // Endpoint pour ajouter un nouvel acteur
+    // Récupérer tous les acteurs
+    @GetMapping
+    public List<ActorDTO> getAllActors() {
+        return actorOrchestration.getActorsByName("");
+    }
+
+    // Créer un nouvel acteur
     @PostMapping
-    public ResponseEntity<Actor> addActor(@RequestBody Actor actor) {
-        Actor savedActor = actorService.addActor(actor);
-        return new ResponseEntity<>(savedActor, HttpStatus.CREATED);
+    public ResponseEntity<ActorDTO> createActor(@RequestBody ActorDTO actorDTO) {
+        ActorDTO createdActor = actorOrchestration.createActor(actorDTO);
+        return new ResponseEntity<>(createdActor, HttpStatus.CREATED);
     }
 
-    // Endpoint pour mettre à jour un acteur existant
+    // Mettre à jour un acteur
     @PutMapping("/{id}")
-    public ResponseEntity<Actor> updateActor(@PathVariable Integer id, @RequestBody Actor actor) {
-        actor.setId(id);
-        Actor updatedActor = actorService.updateActor(actor);
+    public ResponseEntity<ActorDTO> updateActor(@PathVariable Long id, @RequestBody ActorDTO actorDTO) {
+        ActorDTO updatedActor = actorOrchestration.updateActor(id, actorDTO);
         if (updatedActor != null) {
             return new ResponseEntity<>(updatedActor, HttpStatus.OK);
-        } else {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND); // Si l'acteur n'est pas trouvé
         }
+        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 
-    // Endpoint pour supprimer un acteur
+    // Supprimer un acteur
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteActor(@PathVariable Integer id) {
-        actorService.deleteActor(id);
-        return new ResponseEntity<>(HttpStatus.NO_CONTENT); // Retourne un code HTTP 204 (No Content)
-    }
-
-    // Endpoint pour obtenir un acteur par son identifiant
-    @GetMapping("/{id}")
-    public ResponseEntity<Actor> getActorById(@PathVariable Integer id) {
-        Optional<Actor> actor = actorService.getActorById(id);
-        return actor.map(ResponseEntity::ok).orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
-    }
-
-    // Endpoint pour rechercher des acteurs par leur nom
-    @GetMapping("/search")
-    public ResponseEntity<List<Actor>> getActorsByName(@RequestParam String name) {
-        List<Actor> actors = actorService.getActorsByName(name);
-        if (!actors.isEmpty()) {
-            return new ResponseEntity<>(actors, HttpStatus.OK);
-        } else {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND); // Aucun acteur trouvé
-        }
-    }
-
-    // Endpoint pour obtenir la liste de tous les acteurs
-    @GetMapping
-    public ResponseEntity<List<Actor>> getAllActors() {
-        List<Actor> actors = actorService.getAllActors();
-        return new ResponseEntity<>(actors, HttpStatus.OK);
+    public ResponseEntity<Void> deleteActor(@PathVariable Long id) {
+        actorOrchestration.deleteActor(id);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 }
