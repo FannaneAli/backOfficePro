@@ -7,6 +7,15 @@ import org.springframework.stereotype.Component;
 
 import java.util.List;
 
+/**
+ * Orchestrateur des séries télévisées.
+ * Coordonne :
+ * - La gestion des sagas et franchises
+ * - Les relations avec les saisons
+ * - Les statistiques d'audience consolidées
+ */
+
+
 @Component
 public class TVShowOrchestration {
 

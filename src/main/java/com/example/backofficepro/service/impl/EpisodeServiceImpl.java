@@ -11,29 +11,41 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * Service opérationnel pour la gestion des épisodes.
+ * Coordonne :
+ * - Les interactions avec le repository d'épisodes
+ * - Le mapping des données techniques d'épisode
+ * - La validation des données avant persistence
+ */
+
+
 @Service
 public class EpisodeServiceImpl implements IEpisodeService {
 
     @Autowired
     private EpisodeRepository episodeRepository;
 
+    @Autowired
+    private EpisodeMapper episodeMapper; // Injection du mapper
+
     @Override
     public EpisodeDTO getEpisodeById(Long id) {
         Optional<Episode> episode = episodeRepository.findById(id);
-        return episode.map(EpisodeMapper::toDTO).orElse(null);
+        return episode.map(episodeMapper::toDTO).orElse(null);
     }
 
     @Override
     public List<EpisodeDTO> getAllEpisodes() {
         List<Episode> episodes = episodeRepository.findAll();
-        return EpisodeMapper.toDTOList(episodes);
+        return episodeMapper.toDTOList(episodes);
     }
 
     @Override
     public EpisodeDTO createEpisode(EpisodeDTO episodeDTO) {
-        Episode episode = EpisodeMapper.toEntity(episodeDTO);
+        Episode episode = episodeMapper.toEntity(episodeDTO);
         Episode savedEpisode = episodeRepository.save(episode);
-        return EpisodeMapper.toDTO(savedEpisode);
+        return episodeMapper.toDTO(savedEpisode);
     }
 
     @Override
@@ -47,8 +59,9 @@ public class EpisodeServiceImpl implements IEpisodeService {
             episode.setPhotoUrl(episodeDTO.getPhotoUrl());
             episode.setDuration(episodeDTO.getDuration());
             episode.setVideoUrl(episodeDTO.getVideoUrl());
+            episode.setSeasonNumber(episodeDTO.getSeasonNumber()); // ✅ Ajout de `seasonNumber`
             Episode updatedEpisode = episodeRepository.save(episode);
-            return EpisodeMapper.toDTO(updatedEpisode);
+            return episodeMapper.toDTO(updatedEpisode);
         }
         return null;
     }

@@ -7,14 +7,14 @@ import java.util.List;
 public interface IMediaService {
 
 
-    MediaDTO getMediaById(Integer id);
+    MediaDTO getMediaById(Long id);
 
     List<MediaDTO> getAllMedia();
 
     MediaDTO createMedia(MediaDTO mediaDTO);
 
 
-    MediaDTO updateMedia(Integer id, MediaDTO mediaDTO);
+    MediaDTO updateMedia(Long id, MediaDTO mediaDTO);
 
-    void deleteMedia(Integer id);
+    void deleteMedia(Long id);
 }

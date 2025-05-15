@@ -2,7 +2,6 @@ package com.example.backofficepro.controller;
 
 import com.example.backofficepro.dto.MediaNewsAssociationDTO;
 import com.example.backofficepro.orchestration.MediaNewsAssociationOrchestration;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -13,46 +12,44 @@ import java.util.List;
 @RequestMapping("/api/media-news-associations")
 public class MediaNewsAssociationController {
 
-    @Autowired
-    private MediaNewsAssociationOrchestration mediaNewsAssociationOrchestration;
+    private final MediaNewsAssociationOrchestration mediaNewsAssociationOrchestration;
+
+    public MediaNewsAssociationController(MediaNewsAssociationOrchestration mediaNewsAssociationOrchestration) {
+        this.mediaNewsAssociationOrchestration = mediaNewsAssociationOrchestration;
+    }
 
     // Récupérer une association média-actualités par ID
     @GetMapping("/{id}")
     public ResponseEntity<MediaNewsAssociationDTO> getMediaNewsAssociationById(@PathVariable Long id) {
         MediaNewsAssociationDTO associationDTO = mediaNewsAssociationOrchestration.getMediaNewsAssociationById(id);
-        if (associationDTO != null) {
-            return new ResponseEntity<>(associationDTO, HttpStatus.OK);
-        }
-        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        return associationDTO != null ? ResponseEntity.ok(associationDTO) : ResponseEntity.status(HttpStatus.NOT_FOUND).build();
     }
 
     // Récupérer toutes les associations média-actualités
     @GetMapping
-    public List<MediaNewsAssociationDTO> getAllMediaNewsAssociations() {
-        return mediaNewsAssociationOrchestration.getAllMediaNewsAssociations();
+    public ResponseEntity<List<MediaNewsAssociationDTO>> getAllMediaNewsAssociations() {
+        List<MediaNewsAssociationDTO> associations = mediaNewsAssociationOrchestration.getAllMediaNewsAssociations();
+        return ResponseEntity.ok(associations);
     }
 
     // Créer une nouvelle association média-actualités
     @PostMapping
     public ResponseEntity<MediaNewsAssociationDTO> createMediaNewsAssociation(@RequestBody MediaNewsAssociationDTO mediaNewsAssociationDTO) {
         MediaNewsAssociationDTO createdAssociation = mediaNewsAssociationOrchestration.createMediaNewsAssociation(mediaNewsAssociationDTO);
-        return new ResponseEntity<>(createdAssociation, HttpStatus.CREATED);
+        return ResponseEntity.status(HttpStatus.CREATED).body(createdAssociation);
     }
 
     // Mettre à jour une association média-actualités
     @PutMapping("/{id}")
     public ResponseEntity<MediaNewsAssociationDTO> updateMediaNewsAssociation(@PathVariable Long id, @RequestBody MediaNewsAssociationDTO mediaNewsAssociationDTO) {
         MediaNewsAssociationDTO updatedAssociation = mediaNewsAssociationOrchestration.updateMediaNewsAssociation(id, mediaNewsAssociationDTO);
-        if (updatedAssociation != null) {
-            return new ResponseEntity<>(updatedAssociation, HttpStatus.OK);
-        }
-        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        return updatedAssociation != null ? ResponseEntity.ok(updatedAssociation) : ResponseEntity.status(HttpStatus.NOT_FOUND).build();
     }
 
     // Supprimer une association média-actualités
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteMediaNewsAssociation(@PathVariable Long id) {
         mediaNewsAssociationOrchestration.deleteMediaNewsAssociation(id);
-        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 }

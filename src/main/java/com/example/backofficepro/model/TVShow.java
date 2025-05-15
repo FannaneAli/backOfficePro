@@ -6,18 +6,14 @@ import lombok.NoArgsConstructor;
 
 import jakarta.persistence.*;
 import java.util.List;
-@DiscriminatorValue("TVShow")
+
 @Entity
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+@DiscriminatorValue("TV_SHOW") // ✅ Ajout pour spécifier le type dans la base
 public class TVShow extends Media {
 
-    @OneToMany(mappedBy = "tvShow")
-    private List<Season> seasons;
-
-    public TVShow(Integer id, String title, Integer rating, String description, String photoUrl, String releaseDate, List<Season> entityList) {
-        super(id, title, rating, description, photoUrl, releaseDate);
-        this.seasons = entityList;
-    }
+    @OneToMany(mappedBy = "tvShow", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Episode> episodes;
 }

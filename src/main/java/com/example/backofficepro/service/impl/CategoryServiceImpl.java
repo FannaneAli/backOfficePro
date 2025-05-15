@@ -11,29 +11,41 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Optional;
 
+
+/**
+ * Implémentation concrète du service de gestion des catégories.
+ * Gère :
+ * - La hiérarchie des catégories multimédias
+ * - Les opérations de persistence avancées
+ * - Le mapping DTO/Entité via CategoryMapper
+ */
+
 @Service
 public class CategoryServiceImpl implements ICategoryService {
 
     @Autowired
     private CategoryRepository categoryRepository;
 
+    @Autowired
+    private CategoryMapper categoryMapper; // Injection du mapper
+
     @Override
     public CategoryDTO getCategoryById(Long id) {
         Optional<Category> category = categoryRepository.findById(id);
-        return category.map(CategoryMapper::toDTO).orElse(null);
+        return category.map(categoryMapper::toDTO).orElse(null);
     }
 
     @Override
     public List<CategoryDTO> getAllCategories() {
         List<Category> categories = categoryRepository.findAll();
-        return CategoryMapper.toDTOList(categories);
+        return categoryMapper.toDTOList(categories);
     }
 
     @Override
     public CategoryDTO createCategory(CategoryDTO categoryDTO) {
-        Category category = CategoryMapper.toEntity(categoryDTO);
+        Category category = categoryMapper.toEntity(categoryDTO);
         Category savedCategory = categoryRepository.save(category);
-        return CategoryMapper.toDTO(savedCategory);
+        return categoryMapper.toDTO(savedCategory);
     }
 
     @Override
@@ -44,7 +56,7 @@ public class CategoryServiceImpl implements ICategoryService {
             category.setName(categoryDTO.getName());
             category.setDescription(categoryDTO.getDescription());
             Category updatedCategory = categoryRepository.save(category);
-            return CategoryMapper.toDTO(updatedCategory);
+            return categoryMapper.toDTO(updatedCategory);
         }
         return null;
     }

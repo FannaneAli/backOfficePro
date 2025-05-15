@@ -6,6 +6,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
+/**
+ * Orchestrateur des associations médias-acteurs.
+ * Facilite :
+ * - La gestion des crédits d'acteurs dans les médias
+ * - La coordination des opérations sur les relations ManyToMany
+ * - L'intégration avec les systèmes de gestion de droits
+ */
+
 
 @Component
 public class MediaActorAssociationOrchestration {

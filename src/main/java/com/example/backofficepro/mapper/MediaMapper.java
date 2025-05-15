@@ -2,42 +2,42 @@ package com.example.backofficepro.mapper;
 
 import com.example.backofficepro.dto.MediaDTO;
 import com.example.backofficepro.model.Media;
+import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
+import org.mapstruct.Builder;
 import java.util.List;
-import java.util.stream.Collectors;
 
-public class MediaMapper {
+/**
+ * Mapper central pour les entités multimédias.
+ *
+ * <p>Gère la conversion complète entre :
+ * <ul>
+ *   <li>L'entité média {@link Media}</li>
+ *   <li>Sa représentation DTO {@link MediaDTO}</li>
+ * </ul>
+ *
+ * @mapping Inclut les métadonnées critiques (titre, date de sortie, rating)
+ */
 
-    public static MediaDTO toDTO(Media media) {
-        if (media == null) {
-            return null;
-        }
-        return new MediaDTO(
-                media.getId(),
-                media.getTitle(),
-                media.getRating(),
-                media.getDescription(),
-                media.getPhotoUrl(),
-                media.getReleaseDate()
-        );
-    }
 
-    public static Media toEntity(MediaDTO mediaDTO) {
-        if (mediaDTO == null) {
-            return null;
-        }
-        return new Media(
-                mediaDTO.getId(),
-                mediaDTO.getTitle(),
-                mediaDTO.getRating(),
-                mediaDTO.getDescription(),
-                mediaDTO.getPhotoUrl(),
-                mediaDTO.getReleaseDate()
-        );
-    }
+@Mapper(componentModel = "spring", builder = @Builder(disableBuilder = true))
+public interface MediaMapper {
 
-    public static List<MediaDTO> toDTOList(List<Media> medias) {
-        return medias.stream()
-                .map(MediaMapper::toDTO)
-                .collect(Collectors.toList());
-    }
+    @Mapping(target = "id", source = "media.id")
+    @Mapping(target = "title", source = "media.title")
+    @Mapping(target = "rating", source = "media.rating")
+    @Mapping(target = "description", source = "media.description")
+    @Mapping(target = "photoUrl", source = "media.photoUrl")
+    @Mapping(target = "releaseDate", source = "media.releaseDate")
+    MediaDTO toDTO(Media media);
+
+    @Mapping(target = "id", source = "mediaDTO.id")
+    @Mapping(target = "title", source = "mediaDTO.title")
+    @Mapping(target = "rating", source = "mediaDTO.rating")
+    @Mapping(target = "description", source = "mediaDTO.description")
+    @Mapping(target = "photoUrl", source = "mediaDTO.photoUrl")
+    @Mapping(target = "releaseDate", source = "mediaDTO.releaseDate")
+    Media toEntity(MediaDTO mediaDTO);
+
+    List<MediaDTO> toDTOList(List<Media> medias);
 }

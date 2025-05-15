@@ -15,7 +15,7 @@ public class Episode {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+    private Long id;
 
     private Integer episodeNumber;  // Le numéro de l'épisode
     private String title;           // Le titre de l'épisode
@@ -23,18 +23,9 @@ public class Episode {
     private String photoUrl;        // L'URL de la photo de l'épisode
     private Integer duration;       // La durée de l'épisode
     private String videoUrl;        // L'URL de la vidéo de l'épisode
+    private Integer seasonNumber;   // ✅ Remplacement de `Season` par `seasonNumber`
 
-    @ManyToOne
-    @JoinColumn(name = "season_id")
-    private Season season;          // La saison à laquelle appartient cet épisode
-
-    public Episode(Integer id, Integer episodeNumber, String title, String description, String photoUrl, Integer duration, String videoUrl) {
-        this.id = id;
-        this.episodeNumber = episodeNumber;
-        this.title = title;
-        this.description = description;
-        this.photoUrl = photoUrl;
-        this.duration = duration;
-        this.videoUrl = videoUrl;
-    }
+    @ManyToOne // ✅ Ajout de la relation avec TVShow
+    @JoinColumn(name = "tv_show_id") // ✅ Ajout de la clé étrangère
+    private TVShow tvShow;
 }

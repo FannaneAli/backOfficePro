@@ -15,7 +15,7 @@ import java.util.List;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
+@Inheritance(strategy = InheritanceType.JOINED)
 @DiscriminatorColumn(name = "media_type", discriminatorType = DiscriminatorType.STRING)
 @Table(name = "media")
 @JsonIdentityInfo(
@@ -24,8 +24,8 @@ import java.util.List;
 public class Media implements Serializable {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+    @GeneratedValue(strategy = GenerationType.AUTO) // Changement de génération de clé primaire
+    private Long id;
 
     private String title;
 
@@ -34,7 +34,7 @@ public class Media implements Serializable {
     private Category category;
 
     @OneToMany(mappedBy = "media")
-    private List<MediaThemeAssociation> themeAssociations;  // Updated to association class
+    private List<MediaThemeAssociation> themeAssociations;
 
     private Integer rating;
     private String description;
@@ -43,7 +43,7 @@ public class Media implements Serializable {
 
     @JsonManagedReference
     @OneToMany(mappedBy = "media")
-    private List<MediaActorAssociation> actorAssociations;  // Updated to association class
+    private List<MediaActorAssociation> actorAssociations;
 
     private String director;
     private String productionCompany;
@@ -51,15 +51,14 @@ public class Media implements Serializable {
     private String language;
 
     @OneToMany(mappedBy = "media")
-    private List<MediaNewsAssociation> newsAssociations;  // Updated to association class
+    private List<MediaNewsAssociation> newsAssociations;
 
-    public Media(Integer id, String title, Integer rating, String description, String photoUrl, String releaseDate) {
+    public Media(Long id, String title, Integer rating, String description, String photoUrl, String releaseDate) {
         this.id = id;
         this.title = title;
         this.rating = rating;
         this.description = description;
         this.photoUrl = photoUrl;
         this.releaseDate = releaseDate;
-
     }
 }

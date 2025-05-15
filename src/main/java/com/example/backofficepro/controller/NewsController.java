@@ -2,7 +2,6 @@ package com.example.backofficepro.controller;
 
 import com.example.backofficepro.dto.NewsDTO;
 import com.example.backofficepro.orchestration.NewsOrchestration;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -13,46 +12,44 @@ import java.util.List;
 @RequestMapping("/api/news")
 public class NewsController {
 
-    @Autowired
-    private NewsOrchestration newsOrchestration;
+    private final NewsOrchestration newsOrchestration;
+
+    public NewsController(NewsOrchestration newsOrchestration) {
+        this.newsOrchestration = newsOrchestration;
+    }
 
     // Récupérer une actualité par ID
     @GetMapping("/{id}")
-    public ResponseEntity<NewsDTO> getNewsById(@PathVariable Integer id) {
+    public ResponseEntity<NewsDTO> getNewsById(@PathVariable Long id) {
         NewsDTO newsDTO = newsOrchestration.getNewsById(id);
-        if (newsDTO != null) {
-            return new ResponseEntity<>(newsDTO, HttpStatus.OK);
-        }
-        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        return newsDTO != null ? ResponseEntity.ok(newsDTO) : ResponseEntity.status(HttpStatus.NOT_FOUND).build();
     }
 
     // Récupérer toutes les actualités
     @GetMapping
-    public List<NewsDTO> getAllNews() {
-        return newsOrchestration.getAllNews();
+    public ResponseEntity<List<NewsDTO>> getAllNews() {
+        List<NewsDTO> newsList = newsOrchestration.getAllNews();
+        return ResponseEntity.ok(newsList);
     }
 
     // Créer une nouvelle actualité
     @PostMapping
     public ResponseEntity<NewsDTO> createNews(@RequestBody NewsDTO newsDTO) {
         NewsDTO createdNews = newsOrchestration.createNews(newsDTO);
-        return new ResponseEntity<>(createdNews, HttpStatus.CREATED);
+        return ResponseEntity.status(HttpStatus.CREATED).body(createdNews);
     }
 
     // Mettre à jour une actualité
     @PutMapping("/{id}")
-    public ResponseEntity<NewsDTO> updateNews(@PathVariable Integer id, @RequestBody NewsDTO newsDTO) {
+    public ResponseEntity<NewsDTO> updateNews(@PathVariable Long id, @RequestBody NewsDTO newsDTO) {
         NewsDTO updatedNews = newsOrchestration.updateNews(id, newsDTO);
-        if (updatedNews != null) {
-            return new ResponseEntity<>(updatedNews, HttpStatus.OK);
-        }
-        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        return updatedNews != null ? ResponseEntity.ok(updatedNews) : ResponseEntity.status(HttpStatus.NOT_FOUND).build();
     }
 
     // Supprimer une actualité
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteNews(@PathVariable Integer id) {
+    public ResponseEntity<Void> deleteNews(@PathVariable Long id) {
         newsOrchestration.deleteNews(id);
-        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 }

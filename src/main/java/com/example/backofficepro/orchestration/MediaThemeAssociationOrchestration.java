@@ -7,6 +7,14 @@ import org.springframework.stereotype.Component;
 
 import java.util.List;
 
+/**
+ * Orchestrateur des thématisations multimédias.
+ * Responsable de :
+ * - L'association des thèmes aux contenus média
+ * - L'alimentation des systèmes de recommandation
+ * - La gestion des métadonnées sémantiques
+ */
+
 @Component
 public class MediaThemeAssociationOrchestration {
 

@@ -8,7 +8,7 @@ public interface IThemeService {
 
 
 
-    ThemeDTO getThemeById(Integer id);
+    ThemeDTO getThemeById(Long id);
 
     List<ThemeDTO> getAllThemes();
 
@@ -16,7 +16,7 @@ public interface IThemeService {
 
 
 
-    ThemeDTO updateTheme(Integer id, ThemeDTO themeDTO);
+    ThemeDTO updateTheme(Long id, ThemeDTO themeDTO);
 
-    void deleteTheme(Integer id);
+    void deleteTheme(Long id);
 }

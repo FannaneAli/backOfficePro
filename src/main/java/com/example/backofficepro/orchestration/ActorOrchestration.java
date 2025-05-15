@@ -7,6 +7,15 @@ import org.springframework.stereotype.Component;
 
 import java.util.List;
 
+/**
+ * Orchestrateur central pour la gestion des acteurs.
+ * Fait le pont entre :
+ * - Les contrôleurs REST
+ * - Les services métier
+ * - Le système de cache (si applicable)
+ */
+
+
 @Component
 public class ActorOrchestration {
 

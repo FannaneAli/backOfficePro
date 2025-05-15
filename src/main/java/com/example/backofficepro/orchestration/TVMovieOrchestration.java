@@ -7,6 +7,15 @@ import org.springframework.stereotype.Component;
 
 import java.util.List;
 
+/**
+ * Orchestrateur spécialisé pour les téléfilms.
+ * Gère les spécificités :
+ * - Des métadonnées de diffusion TV
+ * - Des droits de rediffusion
+ * - De l'intégration avec les grilles de programme
+ */
+
+
 @Component
 public class TVMovieOrchestration {
 

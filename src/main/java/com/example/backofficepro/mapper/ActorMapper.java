@@ -2,38 +2,38 @@ package com.example.backofficepro.mapper;
 
 import com.example.backofficepro.dto.ActorDTO;
 import com.example.backofficepro.model.Actor;
+import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
+import org.mapstruct.Builder;
 import java.util.List;
-import java.util.stream.Collectors;
 
-public class ActorMapper {
+/**
+ * Mapper MapStruct pour la conversion entre les entités Actor et ActorDTO.
+ *
+ * <p>Gère le mapping bidirectionnel entre :
+ * <ul>
+ *   <li>L'entité de persistance {@link Actor}</li>
+ *   <li>Le DTO de transfert {@link ActorDTO}</li>
+ * </ul>
+ *
+ * @config Configuration MapStruct avec le modèle Spring
+ */
 
-    public static ActorDTO toDTO(Actor actor) {
-        if (actor == null) {
-            return null;
-        }
-        return new ActorDTO(
-                actor.getId(),
-                actor.getName(),
-                actor.getBiography(),
-                actor.getPhotoUrl()
-        );
-    }
-//findbyid pour recuperer les champ kamlin mais 3gzt tal ghda
-    public static Actor toEntity(ActorDTO actorDTO) {
-        if (actorDTO == null) {
-            return null;
-        }
-        return new Actor(
-                actorDTO.getId(),
-                actorDTO.getName(),
-                actorDTO.getBiography(),
-                actorDTO.getPhotoUrl()
-        );
-    }
 
-    public static List<ActorDTO> toDTOList(List<Actor> actors) {
-        return actors.stream()
-                .map(ActorMapper::toDTO)
-                .collect(Collectors.toList());
-    }
+@Mapper(componentModel = "spring", builder = @Builder(disableBuilder = true))
+public interface ActorMapper {
+
+    @Mapping(target = "id", source = "actor.id")
+    @Mapping(target = "name", source = "actor.name")
+    @Mapping(target = "biography", source = "actor.biography")
+    @Mapping(target = "photoUrl", source = "actor.photoUrl")
+    ActorDTO toDTO(Actor actor);
+
+    @Mapping(target = "id", source = "actorDTO.id")
+    @Mapping(target = "name", source = "actorDTO.name")
+    @Mapping(target = "biography", source = "actorDTO.biography")
+    @Mapping(target = "photoUrl", source = "actorDTO.photoUrl")
+    Actor toEntity(ActorDTO actorDTO);
+
+    List<ActorDTO> toDTOList(List<Actor> actors);
 }

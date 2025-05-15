@@ -13,29 +13,46 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * Implémentation du service pour la gestion des associations entre acteurs et actualités.
+ * Responsable de :
+ * - La conversion DTO/Entité via les mappers
+ * - La persistance des relations via le repository dédié
+ * - La coordination des opérations CRUD complètes
+ */
+
+
 @Service
 public class ActorNewsAssociationServiceImpl implements IActorNewsAssociationService {
 
     @Autowired
     private ActorNewsAssociationRepository actorNewsAssociationRepository;
 
+    @Autowired
+    private ActorMapper actorMapper;
+    @Autowired
+    private  NewsMapper  NewsMapper;
+
+    @Autowired
+    private ActorNewsAssociationMapper actorNewsAssociationMapper;
+
     @Override
     public ActorNewsAssociationDTO getActorNewsAssociationById(Long id) {
         Optional<ActorNewsAssociation> association = actorNewsAssociationRepository.findById(id);
-        return association.map(ActorNewsAssociationMapper::toDTO).orElse(null);
+        return association.map(actorNewsAssociationMapper::toDTO).orElse(null);
     }
 
     @Override
     public List<ActorNewsAssociationDTO> getAllActorNewsAssociations() {
         List<ActorNewsAssociation> associations = actorNewsAssociationRepository.findAll();
-        return ActorNewsAssociationMapper.toDTOList(associations);
+        return actorNewsAssociationMapper.toDTOList(associations);
     }
 
     @Override
     public ActorNewsAssociationDTO createActorNewsAssociation(ActorNewsAssociationDTO actorNewsAssociationDTO) {
-        ActorNewsAssociation association = ActorNewsAssociationMapper.toEntity(actorNewsAssociationDTO);
+        ActorNewsAssociation association = actorNewsAssociationMapper.toEntity(actorNewsAssociationDTO);
         ActorNewsAssociation savedAssociation = actorNewsAssociationRepository.save(association);
-        return ActorNewsAssociationMapper.toDTO(savedAssociation);
+        return actorNewsAssociationMapper.toDTO(savedAssociation);
     }
 
     @Override
@@ -43,10 +60,10 @@ public class ActorNewsAssociationServiceImpl implements IActorNewsAssociationSer
         Optional<ActorNewsAssociation> existingAssociation = actorNewsAssociationRepository.findById(id);
         if (existingAssociation.isPresent()) {
             ActorNewsAssociation association = existingAssociation.get();
-            association.setActor(ActorMapper.toEntity(actorNewsAssociationDTO.getActor()));
+            association.setActor(actorMapper.toEntity(actorNewsAssociationDTO.getActor()));  // Utilisation de l'injection ActorMapper
             association.setNews(NewsMapper.toEntity(actorNewsAssociationDTO.getNews()));
             ActorNewsAssociation updatedAssociation = actorNewsAssociationRepository.save(association);
-            return ActorNewsAssociationMapper.toDTO(updatedAssociation);
+            return actorNewsAssociationMapper.toDTO(updatedAssociation);
         }
         return null;
     }

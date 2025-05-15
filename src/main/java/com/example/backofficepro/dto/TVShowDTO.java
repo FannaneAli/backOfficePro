@@ -10,11 +10,22 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 public class TVShowDTO extends MediaDTO {
+    private String director;
+    private String productionCompany;
+    private String categoryAge;
+    private String language;
+    private Long categoryId;
+    private List<EpisodeDTO> episodes;
 
-    private List<SeasonDTO> seasons;
-
-    public TVShowDTO(Integer id, String title, Integer rating, String description, String photoUrl, String releaseDate, List<SeasonDTO> dtoList) {
+    public TVShowDTO(Long id, String title, Integer rating, String description, String photoUrl, String releaseDate,
+                     String director, String productionCompany, String categoryAge, String language, Long categoryId, List<EpisodeDTO> episodes) {
         super(id, title, rating, description, photoUrl, releaseDate);
-        this.seasons = dtoList;
+        this.director = director;
+        this.productionCompany = productionCompany;
+        this.categoryAge = categoryAge;
+        this.language = language;
+        this.categoryId = categoryId;
+        this.episodes = episodes;
     }
+
 }

@@ -2,37 +2,36 @@ package com.example.backofficepro.mapper;
 
 import com.example.backofficepro.dto.MediaNewsAssociationDTO;
 import com.example.backofficepro.model.MediaNewsAssociation;
-
+import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
+import org.mapstruct.Builder;
 import java.util.List;
-import java.util.stream.Collectors;
 
-public class MediaNewsAssociationMapper {
+/**
+ * Mapper pour les associations Médias/Actualités.
+ *
+ * <p>Traduit les relations cross-domain entre :
+ * <ul>
+ *   <li>{@link MediaNewsAssociation} (Entité)</li>
+ *   <li>{@link MediaNewsAssociationDTO} (DTO)</li>
+ * </ul>
+ *
+ * @note Garantit la cohérence des références croisées
+ */
 
-    public static MediaNewsAssociationDTO toDTO(MediaNewsAssociation mediaNewsAssociation) {
-        if (mediaNewsAssociation == null) {
-            return null;
-        }
-        return new MediaNewsAssociationDTO(
-                mediaNewsAssociation.getId(),
-                MediaMapper.toDTO(mediaNewsAssociation.getMedia()),
-                NewsMapper.toDTO(mediaNewsAssociation.getNews())
-        );
-    }
 
-    public static MediaNewsAssociation toEntity(MediaNewsAssociationDTO mediaNewsAssociationDTO) {
-        if (mediaNewsAssociationDTO == null) {
-            return null;
-        }
-        return new MediaNewsAssociation(
-                mediaNewsAssociationDTO.getId(),
-                MediaMapper.toEntity(mediaNewsAssociationDTO.getMedia()),
-                NewsMapper.toEntity(mediaNewsAssociationDTO.getNews())
-        );
-    }
+@Mapper(componentModel = "spring", builder = @Builder(disableBuilder = true))
+public interface MediaNewsAssociationMapper {
 
-    public static List<MediaNewsAssociationDTO> toDTOList(List<MediaNewsAssociation> associations) {
-        return associations.stream()
-                .map(MediaNewsAssociationMapper::toDTO)
-                .collect(Collectors.toList());
-    }
+    @Mapping(target = "id", source = "mediaNewsAssociation.id")
+    @Mapping(target = "media", source = "mediaNewsAssociation.media")
+    @Mapping(target = "news", source = "mediaNewsAssociation.news")
+    MediaNewsAssociationDTO toDTO(MediaNewsAssociation mediaNewsAssociation);
+
+    @Mapping(target = "id", source = "mediaNewsAssociationDTO.id")
+    @Mapping(target = "media", source = "mediaNewsAssociationDTO.media")
+    @Mapping(target = "news", source = "mediaNewsAssociationDTO.news")
+    MediaNewsAssociation toEntity(MediaNewsAssociationDTO mediaNewsAssociationDTO);
+
+    List<MediaNewsAssociationDTO> toDTOList(List<MediaNewsAssociation> mediaNewsAssociations);
 }

@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Backoffice - Admin Panel</title>
+    <link rel="stylesheet" href="/css/styles.css"> <!-- Lien vers le fichier CSS -->
+    <script src="/js/scripts.js" defer></script> <!-- Lien vers le fichier JavaScript -->
+</head>
+<body>
+<!-- Container principal pour la barre latérale et le contenu -->
+<div class="container">
+    <!-- Barre latérale cachée -->
+    <nav class="sidebar" id="sidebar">
+        <ul>
+            <li><button onclick="loadActors()"> Acteurs</button></li>
+            <li><button onclick="loadCategories()"><i class="fas fa-tags"></i>Catégories</button></li>
+            <li><button onclick="loadThemes()"><i class="fas fa-palette"></i>Thèmes</button></li>
+            <li><button onclick="loadNews()"><i class="fas fa-newspaper"></i>News</button></li>
+            <li><button onclick="loadTvMovies()"><i class="fas fa-film"></i>Tv Movies</button></li>
+            <li><button onclick="loadEpisodes()"><i class="fas fa-play-circle"></i>Episodes</button></li>
+            <li><button onclick="loadSeasons()"><i class="fas fa-calendar"></i>Saisons</button></li>
+            <li><button onclick="loadTvShows()"><i class="fas fa-tv"></i>Tv Shows</button></li>
+        </ul>
+    </nav>
+
+    <!-- Bouton pour afficher/masquer la barre latérale -->
+    <button class="toggle-btn" onclick="toggleSidebar()">☰</button>
+
+    <!-- Main Content Area -->
+    <div class="content" id="contentArea">
+        <h1>Bienvenue dans le panneau d'administration</h1>
+        <p>Sélectionnez une option dans la barre de navigation.</p>
+    </div>
+</div>
+
+<!-- Modal pour Ajouter ou Modifier un Acteur -->
+<div id="actorModal" class="modal">
+    <div class="modal-content">
+        <h3 id="modalTitle" class="create">Ajouter un Acteur</h3>
+        <form id="actorForm" action="" method="post" onsubmit="submitForm(event)">
+            <label for="name">Nom</label>
+            <input type="text" id="name" name="name" required>
+            <label for="biography">Biographie</label>
+            <textarea id="biography" name="biography"></textarea>
+            <label for="photoUrl">URL Photo</label>
+            <input type="text" id="photoUrlActor" name="photoUrl">
+            <button type="submit" id="submitButton" class="create-btn">Créer</button>
+            <button type="button" onclick="closeModal()">Annuler</button>
+        </form>
+    </div>
+</div>
+
+<!-- Modal pour Ajouter ou Modifier une Catégorie -->
+<div id="categoryModal" class="modal">
+    <div class="modal-content">
+        <h3 id="modalCategoryTitle" class="create">Ajouter une Catégorie</h3>
+        <form id="categoryForm" action="" method="post" onsubmit="submitCategoryForm(event)">
+            <label for="categoryName">Nom</label>
+            <input type="text" id="categoryName" name="name" required>
+            <label for="categoryDescription">Description</label>
+            <textarea id="categoryDescription" name="description"></textarea>
+            <button type="submit" id="categorySubmitButton" class="create-btn">Créer</button>
+            <button type="button" onclick="closeCategoryModal()">Annuler</button>
+        </form>
+    </div>
+</div>
+
+
+<!-- Modal for Adding or Editing a Theme -->
+<div id="themeModal" class="modal">
+    <div class="modal-content">
+        <h3 id="modalThemeTitle" class="create">Ajouter un Thème</h3>
+        <form id="themeForm" action="" method="post" onsubmit="submitThemeForm(event)">
+            <label for="themeName">Nom</label>
+            <input type="text" id="themeName" name="name" required>
+            <label for="themeDescription">Description</label>
+            <textarea id="themeDescription" name="description"></textarea>
+            <button type="submit" id="themeSubmitButton" class="create-btn">Créer</button>
+            <button type="button" onclick="closeThemeModal()">Annuler</button>
+        </form>
+    </div>
+</div>
+
+
+
+<!-- Modal for Adding or Editing News -->
+<div id="newsModal" class="modal">
+    <div class="modal-content">
+        <h3 id="modalNewsTitle" class="create">Ajouter une News</h3>
+        <form id="newsForm" action="" method="post" onsubmit="submitNewsForm(event)">
+            <label for="newsTitle">Titre</label>
+            <input type="text" id="newsTitle" name="title" required>
+
+            <label for="newsContent">Contenu</label>
+            <textarea id="newsContent" name="content"></textarea>
+
+            <label for="newsAuthor">Auteur</label>
+            <input type="text" id="newsAuthor" name="author">
+
+            <label for="newsPublishDate">Date de Publication</label>
+            <input type="date" id="newsPublishDate" name="publishDate">
+
+            <!-- ✅ Ajout du champ "Catégorie" -->
+            <label for="newsCategory">Catégorie</label>
+            <input type="text" id="newsCategory" name="category">
+
+            <button type="submit" id="newsSubmitButton" class="create-btn">Créer</button>
+            <button type="button" onclick="closeNewsModal()">Annuler</button>
+        </form>
+    </div>
+</div>
+
+
+
+<!-- Modal pour Ajouter ou Modifier un Tv_movie -->
+<div id="tvMovieModal" class="modal">
+    <div class="modal-content">
+        <h3 id="modalTvMovieTitle" class="create">Ajouter un Tv Movie</h3>
+        <form id="tvMovieForm" action="" method="post" onsubmit="submitTvMovieForm(event)">
+            <!-- Attributs hérités de Media -->
+            <label for="tvMovieTitle">Titre</label>
+            <input type="text" id="tvMovieTitle" name="title" required>
+
+            <!-- Liste déroulante pour choisir la catégorie -->
+            <label for="category">Catégorie</label>
+            <select id="category" name="category"></select> <!-- Rempli dynamiquement -->
+
+            <!-- Liste déroulante pour choisir le thème -->
+            <label for="theme">Thème</label>
+            <select id="theme" name="theme"></select> <!-- Rempli dynamiquement -->
+
+            <label for="rating">Évaluation</label>
+            <input type="number" id="rating" name="rating" min="0" max="10">
+
+            <label for="description">Description</label>
+            <textarea id="description" name="description"></textarea>
+
+            <label for="photoUrl">URL Photo</label>
+            <input type="text" id="photoUrl" name="photoUrl">
+
+            <label for="releaseDate">Date de Sortie</label>
+            <input type="date" id="releaseDate" name="releaseDate">
+
+            <label for="director">Réalisateur</label>
+            <input type="text" id="director" name="director">
+
+            <label for="productionCompany">Société de Production</label>
+            <input type="text" id="productionCompany" name="productionCompany">
+
+            <label for="categoryAge">Catégorie d'âge</label>
+            <input type="text" id="categoryAge" name="categoryAge">
+
+            <label for="language">Langue</label>
+            <input type="text" id="language" name="language">
+
+            <!-- Attributs spécifiques à Tv_movie -->
+            <label for="duration">Durée (minutes)</label>
+            <input type="number" id="duration" name="duration">
+
+            <label for="trailerUrl">URL Trailer</label>
+            <input type="text" id="trailerUrl" name="trailerUrl">
+
+            <label for="movieUrl">URL du Film</label>
+            <input type="text" id="movieUrl" name="movieUrl">
+
+            <label for="part">Part</label>
+            <input type="text" id="part" name="part">
+
+            <button type="submit" id="tvMovieSubmitButton" class="create-btn">Créer</button>
+            <button type="button" onclick="closeTvMovieModal()">Annuler</button>
+        </form>
+    </div>
+</div>
+
+
+
+
+<!-- Modal pour Ajouter ou Modifier un Episode -->
+<div id="episodeModal" class="modal">
+    <div class="modal-content">
+        <h3 id="modalEpisodeTitle" class="create">Ajouter un Episode</h3>
+        <form id="episodeForm" action="" method="post" onsubmit="submitEpisodeForm(event)">
+            <label for="episodeNumber">Numéro d'Episode</label>
+            <input type="number" id="episodeNumber" name="episodeNumber" required>
+
+            <label for="episodeTitle">Titre</label>
+            <input type="text" id="episodeTitle" name="title" required>
+
+            <label for="episodeDescription">Description</label>
+            <textarea id="episodeDescription" name="description"></textarea>
+
+            <label for="episodePhotoUrl">URL Photo</label>
+            <input type="text" id="episodePhotoUrl" name="photoUrl">
+
+            <label for="episodeDuration">Durée</label>
+            <input type="number" id="episodeDuration" name="duration" min="1">
+
+            <label for="episodeVideoUrl">URL Vidéo</label>
+            <input type="text" id="episodeVideoUrl" name="videoUrl">
+
+
+            <!-- Sélectionner le TV Show -->
+            <label for="episodeTvShow">TV Show</label>
+            <select id="episodeTvShow" name="tvShowId">
+                <!-- Les TV Shows seront ajoutés dynamiquement -->
+            </select>
+
+            <button type="submit" id="episodeSubmitButton" class="create-btn">Créer</button>
+            <button type="button" onclick="closeEpisodeModal()">Annuler</button>
+        </form>
+    </div>
+</div>
+
+
+
+
+
+
+
+<!-- Modal pour Ajouter ou Modifier une TV Show -->
+<div id="tvShowModal" class="modal">
+    <div class="modal-content">
+        <h3 id="modalTvShowTitle" class="create">Ajouter une TV Show</h3>
+        <form id="tvShowForm" action="" method="post" onsubmit="submitTvShowForm(event)">
+
+            <!-- Informations principales -->
+            <div class="form-group">
+                <label for="tvShowTitle">Titre</label>
+                <input type="text" id="tvShowTitle" name="title" required>
+            </div>
+
+            <div class="form-group">
+                <label for="tvShowRating">Évaluation</label>
+                <input type="number" id="tvShowRating" name="rating" min="0" max="10">
+            </div>
+
+            <div class="form-group">
+                <label for="tvShowDescription">Description</label>
+                <textarea id="tvShowDescription" name="description"></textarea>
+            </div>
+
+            <div class="form-group">
+                <label for="tvShowPhotoUrl">URL Photo</label>
+                <input type="text" id="tvShowPhotoUrl" name="photoUrl">
+            </div>
+
+            <div class="form-group">
+                <label for="tvShowReleaseDate">Date de Sortie</label>
+                <input type="date" id="tvShowReleaseDate" name="releaseDate">
+            </div>
+
+            <!-- Détails supplémentaires -->
+            <div class="form-group">
+                <label for="tvShowDirector">Réalisateur</label>
+                <input type="text" id="tvShowDirector" name="director">
+            </div>
+
+            <div class="form-group">
+                <label for="tvShowProductionCompany">Société de Production</label>
+                <input type="text" id="tvShowProductionCompany" name="productionCompany">
+            </div>
+
+            <div class="form-group">
+                <label for="tvShowCategoryAge">Catégorie d'âge</label>
+                <input type="text" id="tvShowCategoryAge" name="categoryAge">
+            </div>
+
+            <div class="form-group">
+                <label for="tvShowLanguage">Langue</label>
+                <input type="text" id="tvShowLanguage" name="language">
+            </div>
+
+            <!-- Sélections dynamiques -->
+            <div class="form-group">
+                <label for="tvShowCategory">Catégorie</label>
+                <select id="tvShowCategory" name="category">
+                    <option value="">Sélectionner une catégorie</option> <!-- ✅ Option par défaut -->
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="tvShowTheme">Thème</label>
+                <select id="tvShowTheme" name="theme">
+                    <option value="">Sélectionner un thème</option> <!-- ✅ Option par défaut -->
+                </select>
+            </div>
+
+            <!-- Boutons d'action -->
+            <div class="form-actions">
+                <button type="submit" id="tvShowSubmitButton" class="create-btn">Créer</button>
+                <button type="button" onclick="closeTvShowModal()">Annuler</button>
+            </div>
+
+        </form>
+    </div>
+</div>
+
+
+
+
+</body>
+</html>

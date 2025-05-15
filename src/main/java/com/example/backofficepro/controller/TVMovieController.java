@@ -2,7 +2,7 @@ package com.example.backofficepro.controller;
 
 import com.example.backofficepro.dto.TVMovieDTO;
 import com.example.backofficepro.orchestration.TVMovieOrchestration;
-import org.springframework.beans.factory.annotation.Autowired;
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -13,46 +13,48 @@ import java.util.List;
 @RequestMapping("/api/tv-movies")
 public class TVMovieController {
 
-    @Autowired
-    private TVMovieOrchestration tvMovieOrchestration;
+    private final TVMovieOrchestration tvMovieOrchestration;
+
+    public TVMovieController(TVMovieOrchestration tvMovieOrchestration) {
+        this.tvMovieOrchestration = tvMovieOrchestration;
+    }
 
     // Récupérer un film TV par ID
     @GetMapping("/{id}")
     public ResponseEntity<TVMovieDTO> getTVMovieById(@PathVariable Long id) {
         TVMovieDTO tvMovieDTO = tvMovieOrchestration.getTVMovieById(id);
-        if (tvMovieDTO != null) {
-            return new ResponseEntity<>(tvMovieDTO, HttpStatus.OK);
-        }
-        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        return tvMovieDTO != null ? ResponseEntity.ok(tvMovieDTO) : ResponseEntity.status(HttpStatus.NOT_FOUND).build();
     }
 
     // Récupérer tous les films TV
     @GetMapping
-    public List<TVMovieDTO> getAllTVMovies() {
-        return tvMovieOrchestration.getTVMoviesByTitle("");
+    public ResponseEntity<List<TVMovieDTO>> getAllTVMovies() {
+        List<TVMovieDTO> tvMovies = tvMovieOrchestration.getTVMoviesByTitle("");
+        return ResponseEntity.ok(tvMovies);
     }
 
     // Créer un nouveau film TV
     @PostMapping
     public ResponseEntity<TVMovieDTO> createTVMovie(@RequestBody TVMovieDTO tvMovieDTO) {
         TVMovieDTO createdTVMovie = tvMovieOrchestration.createTVMovie(tvMovieDTO);
-        return new ResponseEntity<>(createdTVMovie, HttpStatus.CREATED);
+        return ResponseEntity.status(HttpStatus.CREATED).body(createdTVMovie);
     }
 
     // Mettre à jour un film TV
     @PutMapping("/{id}")
     public ResponseEntity<TVMovieDTO> updateTVMovie(@PathVariable Long id, @RequestBody TVMovieDTO tvMovieDTO) {
         TVMovieDTO updatedTVMovie = tvMovieOrchestration.updateTVMovie(id, tvMovieDTO);
-        if (updatedTVMovie != null) {
-            return new ResponseEntity<>(updatedTVMovie, HttpStatus.OK);
-        }
-        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        return updatedTVMovie != null ? ResponseEntity.ok(updatedTVMovie) : ResponseEntity.status(HttpStatus.NOT_FOUND).build();
     }
 
     // Supprimer un film TV
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteTVMovie(@PathVariable Long id) {
-        tvMovieOrchestration.deleteTVMovie(id);
-        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        try {
+            tvMovieOrchestration.deleteTVMovie(id);
+            return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+        } catch (EntityNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build(); // ✅ Gestion d'erreur
+        }
     }
 }

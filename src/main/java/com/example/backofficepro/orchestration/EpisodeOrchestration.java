@@ -7,6 +7,15 @@ import org.springframework.stereotype.Component;
 
 import java.util.List;
 
+/**
+ * Orchestrateur pour la gestion des épisodes.
+ * Coordonne les interactions entre les contrôleurs REST et le service des épisodes.
+ * Responsable de :
+ * - La transmission des requêtes aux services appropriés
+ * - L'adaptation des flux de données pour la couche présentation
+ * - La gestion centralisée des opérations CRUD sur les épisodes
+ */
+
 @Component
 public class EpisodeOrchestration {
 

@@ -7,6 +7,15 @@ import org.springframework.stereotype.Component;
 
 import java.util.List;
 
+/**
+ * Orchestrateur pour la hiérarchie des catégories.
+ * Encapsule :
+ * - La logique de navigation dans l'arborescence
+ * - Les règles de validation catégorielles
+ * - Les conversions de format complexes
+ */
+
+
 @Component
 public class CategoryOrchestration {
 

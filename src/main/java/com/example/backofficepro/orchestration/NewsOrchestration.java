@@ -7,13 +7,22 @@ import org.springframework.stereotype.Component;
 
 import java.util.List;
 
+/**
+ * Orchestrateur du système d'actualités.
+ * Coordonne :
+ * - Le cycle de vie des articles d'actualité
+ * - Les relations avec les autres entités
+ * - Les stratégies de publication multi-canaux
+ */
+
+
 @Component
 public class NewsOrchestration {
 
     @Autowired
     private INewsService newsService;
 
-    public NewsDTO getNewsById(Integer id) {
+    public NewsDTO getNewsById(Long id) {
         return newsService.getNewsById(id);
     }
 
@@ -30,11 +39,11 @@ public class NewsOrchestration {
         return newsService.createNews(newsDTO);
     }
 
-    public NewsDTO updateNews(Integer id, NewsDTO newsDTO) {
+    public NewsDTO updateNews(Long id, NewsDTO newsDTO) {
         return newsService.updateNews(id, newsDTO);
     }
 
-    public void deleteNews(Integer id) {
+    public void deleteNews(Long id) {
         newsService.deleteNews(id);
     }
 }

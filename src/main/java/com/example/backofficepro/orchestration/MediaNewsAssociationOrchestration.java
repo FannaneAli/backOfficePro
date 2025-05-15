@@ -7,6 +7,15 @@ import org.springframework.stereotype.Component;
 
 import java.util.List;
 
+/**
+ * Orchestrateur pour les liens médias/actualités.
+ * Gère :
+ * - Les associations cross-domain entre contenus médias et articles
+ * - La cohérence des données relationnelles
+ * - Les requêtes complexes sur les relations multimédias
+ */
+
+
 @Component
 public class MediaNewsAssociationOrchestration {
 

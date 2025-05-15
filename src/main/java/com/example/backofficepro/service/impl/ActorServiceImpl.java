@@ -11,30 +11,41 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * Service de gestion métier des acteurs.
+ * Fournit les opérations fondamentales pour :
+ * - La recherche et la manipulation des profils d'acteurs
+ * - La conversion des entités via le mapper dédié
+ * - L'intégration avec la couche de persistance
+ */
+
+
 @Service
 public class ActorServiceImpl implements IActorService {
 
     @Autowired
     private ActorRepository actorRepository;
 
+    @Autowired
+    private ActorMapper actorMapper; // Injection du mapper
+
     @Override
     public ActorDTO getActorById(Long id) {
         Optional<Actor> actor = actorRepository.findById(id);
-        return actor.map(ActorMapper::toDTO).orElse(null);
+        return actor.map(actorMapper::toDTO).orElse(null);
     }
 
     @Override
     public List<ActorDTO> getActorsByName(String name) {
-        // Utilisez un critère de recherche pour le nom, si nécessaire
-        List<Actor> actors = actorRepository.findAll(); // Remplacez par un critère de recherche si nécessaire
-        return ActorMapper.toDTOList(actors);
+        List<Actor> actors = actorRepository.findAll();
+        return actorMapper.toDTOList(actors);
     }
 
     @Override
     public ActorDTO createActor(ActorDTO actorDTO) {
-        Actor actor = ActorMapper.toEntity(actorDTO);
+        Actor actor = actorMapper.toEntity(actorDTO);
         Actor savedActor = actorRepository.save(actor);
-        return ActorMapper.toDTO(savedActor);
+        return actorMapper.toDTO(savedActor);
     }
 
     @Override
@@ -46,7 +57,7 @@ public class ActorServiceImpl implements IActorService {
             actor.setBiography(actorDTO.getBiography());
             actor.setPhotoUrl(actorDTO.getPhotoUrl());
             Actor updatedActor = actorRepository.save(actor);
-            return ActorMapper.toDTO(updatedActor);
+            return actorMapper.toDTO(updatedActor);
         }
         return null;
     }

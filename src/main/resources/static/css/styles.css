@@ -1,0 +1,214 @@
+/* Container principal pour le contenu */
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f4f7fc;
+    color: #333;
+}
+
+/* Container principal avec le contenu de la barre latérale */
+.container {
+    display: flex;
+    flex-direction: row;
+    padding: 20px;
+}
+
+/* Barre latérale (fixe) avec bordures arrondies et couleurs */
+/* Barre latérale (fixe) avec bordures arrondies et couleurs */
+.sidebar {
+    position: fixed;
+    top: 0;
+    left: -260px;
+    width: 250px;
+    height: 100%;
+    background-color: #333; /* Gris foncé */
+    color: white;
+    padding-top: 60px;
+    transition: left 0.3s ease;
+    border-left: 3px solid #ffffff; /* Bordure blanche à gauche */
+    border-top-right-radius: 15px;  /* Coins arrondis à droite en haut */
+    border-bottom-right-radius: 15px; /* Coins arrondis à droite en bas */
+}
+
+.sidebar.active {
+    left: -11px;
+}
+
+/* Autres styles restent les mêmes */
+
+
+.sidebar ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.sidebar ul li {
+    padding: 15px;
+    text-align: center;
+}
+
+.sidebar ul li button {
+    background-color: transparent;
+    color: #FFA500; /* Orange motard */
+    border: none;
+    width: 100%;
+    padding: 15px;
+    cursor: pointer;
+    font-size: 16px;
+    border-radius: 5px;
+    transition: background-color 0.3s ease, transform 0.3s ease;
+    display: block;
+}
+
+.sidebar ul li button:hover {
+    background-color: #ddd; /* Gris clair */
+    color: #333; /* Texte gris foncé */
+    transform: scale(1.05); /* Légère augmentation de la taille au survol */
+}
+
+/* Active color for the selected section */
+.sidebar ul li button.active {
+    background-color: #FFA500;
+    color: white; /* Lorsque l'option est active, on garde le texte blanc */
+}
+
+/* Bouton pour afficher/masquer la barre latérale - en haut et en bas */
+.toggle-btn {
+    position: absolute;
+    top: 0px; /* En haut de la barre latérale */
+    left: -15px; /* Décalage à gauche */
+    font-size: 30px;
+    background-color: transparent;
+    /*border: 2px solid #007bff; /* Bordure bleue */
+    color: #FFA500; /* Texte bleu */
+    cursor: pointer;
+    padding: 10px;
+    border-radius: 50%;
+    transition: background-color 0.3s ease;
+}
+
+.toggle-btn:hover {
+
+    color: #333; /* Texte blanc */
+}
+
+.sidebar .toggle-btn.bottom {
+    bottom: 20px; /* En bas de la barre latérale */
+    top: auto; /* Retirer la position en haut */
+}
+
+/* Contenu principal */
+.content {
+    margin-left: 280px;
+    padding: 20px;
+    width: 100%;
+}
+
+/* Panel pour les actions Acteurs, Catégories, Thèmes */
+.panel {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 20px;
+}
+
+/* Styling des boutons d'action dans le contenu */
+button {
+    border: none;
+    padding: 10px 15px;
+    cursor: pointer;
+    font-size: 16px;
+    border-radius: 5px;
+    transition: transform 0.3s ease, background-color 0.3s ease;
+    margin: 5px;
+}
+
+/* Bouton Ajouter - Vert */
+button.create-btn {
+    background-color: green;
+    color: white;
+}
+
+button.create-btn:hover {
+    background-color: #4CAF50; /* Fond vert clair */
+    transform: scale(1.05);
+}
+
+/* Bouton Modifier - Jaune */
+button.edit-btn {
+    background-color: yellow;
+    color: black;
+    border: 2px solid #f1c40f;
+}
+
+
+
+button.edit-btn:hover {
+    background-color: #f39c12; /* Fond jaune clair */
+    transform: scale(1.05);
+}
+
+/* Bouton Supprimer - Rouge */
+button.delete-btn {
+    background-color: red;
+    color: white;
+}
+
+button.delete-btn:hover {
+    background-color: #e74c3c; /* Fond rouge clair */
+    transform: scale(1.05);
+}
+
+
+
+/* Modal pour Ajouter ou Modifier un Acteur */
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0, 0, 0, 0.5);
+}
+
+.modal-content {
+    background-color: #fefefe;
+    margin: 15% auto;
+    padding: 20px;
+    border: 1px solid #888;
+    width: 50%;
+    border-radius: 8px;
+}
+
+/* Recherche d'acteur */
+#searchArea {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+#searchArea input {
+    padding: 10px;
+    border: 1px solid #007bff;
+    border-radius: 4px;
+    font-size: 16px;
+    margin-right: 10px;
+}
+
+#searchArea button {
+    padding: 10px 20px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+#searchArea button:hover {
+    background-color: #0056b3;
+}
+
+

@@ -2,7 +2,6 @@ package com.example.backofficepro.controller;
 
 import com.example.backofficepro.dto.MediaDTO;
 import com.example.backofficepro.orchestration.MediaOrchestration;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -13,46 +12,44 @@ import java.util.List;
 @RequestMapping("/api/medias")
 public class MediaController {
 
-    @Autowired
-    private MediaOrchestration mediaOrchestration;
+    private final MediaOrchestration mediaOrchestration;
+
+    public MediaController(MediaOrchestration mediaOrchestration) {
+        this.mediaOrchestration = mediaOrchestration;
+    }
 
     // Récupérer un média par ID
     @GetMapping("/{id}")
-    public ResponseEntity<MediaDTO> getMediaById(@PathVariable Integer id) {
+    public ResponseEntity<MediaDTO> getMediaById(@PathVariable Long id) {
         MediaDTO mediaDTO = mediaOrchestration.getMediaById(id);
-        if (mediaDTO != null) {
-            return new ResponseEntity<>(mediaDTO, HttpStatus.OK);
-        }
-        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        return mediaDTO != null ? ResponseEntity.ok(mediaDTO) : ResponseEntity.status(HttpStatus.NOT_FOUND).build();
     }
 
     // Récupérer tous les médias
     @GetMapping
-    public List<MediaDTO> getAllMedias() {
-        return mediaOrchestration.getAllMedia();
+    public ResponseEntity<List<MediaDTO>> getAllMedias() {
+        List<MediaDTO> medias = mediaOrchestration.getAllMedia();
+        return ResponseEntity.ok(medias);
     }
 
     // Créer un nouveau média
     @PostMapping
     public ResponseEntity<MediaDTO> createMedia(@RequestBody MediaDTO mediaDTO) {
         MediaDTO createdMedia = mediaOrchestration.createMedia(mediaDTO);
-        return new ResponseEntity<>(createdMedia, HttpStatus.CREATED);
+        return ResponseEntity.status(HttpStatus.CREATED).body(createdMedia);
     }
 
     // Mettre à jour un média
     @PutMapping("/{id}")
-    public ResponseEntity<MediaDTO> updateMedia(@PathVariable Integer id, @RequestBody MediaDTO mediaDTO) {
+    public ResponseEntity<MediaDTO> updateMedia(@PathVariable Long id, @RequestBody MediaDTO mediaDTO) {
         MediaDTO updatedMedia = mediaOrchestration.updateMedia(id, mediaDTO);
-        if (updatedMedia != null) {
-            return new ResponseEntity<>(updatedMedia, HttpStatus.OK);
-        }
-        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        return updatedMedia != null ? ResponseEntity.ok(updatedMedia) : ResponseEntity.status(HttpStatus.NOT_FOUND).build();
     }
 
     // Supprimer un média
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteMedia(@PathVariable Integer id) {
+    public ResponseEntity<Void> deleteMedia(@PathVariable Long id) {
         mediaOrchestration.deleteMedia(id);
-        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 }

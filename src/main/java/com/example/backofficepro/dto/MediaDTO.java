@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class MediaDTO {
 
-    private Integer id;
+    private Long id;
     private String title;
     private Integer rating;
     private String description;

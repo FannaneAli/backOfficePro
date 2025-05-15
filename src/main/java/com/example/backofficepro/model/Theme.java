@@ -16,7 +16,7 @@ public class Theme {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+    private Long id;
 
     private String name;
     private String description;
@@ -24,7 +24,7 @@ public class Theme {
     @OneToMany(mappedBy = "theme")
     private List<MediaThemeAssociation> mediaAssociations;  // Updated to association class
 
-    public Theme(Integer id, String name, String description) {
+    public Theme(Long id, String name, String description) {
         this.id = id;
         this.name = name;
         this.description = description;

@@ -6,6 +6,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
+/**
+ * Orchestrateur pour les associations acteur/actualités.
+ * Responsable de :
+ * - La coordination entre couches métier
+ * - L'agrégation des appels de service
+ * - L'adaptation des flux de données
+ */
+
 
 @Component
 public class ActorNewsAssociationOrchestration {

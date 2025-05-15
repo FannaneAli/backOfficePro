@@ -17,7 +17,7 @@ public class News {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+    private Long id;
 
     private String title;
     private String content;
@@ -31,7 +31,7 @@ public class News {
     @OneToMany(mappedBy = "news")
     private List<MediaNewsAssociation> mediaAssociations;  // Updated to association class
 
-    public News(Integer id, String title, String content, LocalDate publishDate, String category, String author) {
+    public News(Long id, String title, String content, LocalDate publishDate, String category, String author) {
         this.id = id;
         this.title = title;
         this.content = content;
