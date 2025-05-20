@@ -15,50 +15,44 @@ import java.util.List;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@Inheritance(strategy = InheritanceType.JOINED)
+@Inheritance(strategy = InheritanceType.SINGLE_TABLE)  // Utilisation de SINGLE_TABLE pour l'héritage
 @DiscriminatorColumn(name = "media_type", discriminatorType = DiscriminatorType.STRING)
 @Table(name = "media")
-@JsonIdentityInfo(
-        generator = ObjectIdGenerators.PropertyGenerator.class,
-        property = "id")
+@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
 public class Media implements Serializable {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO) // Changement de génération de clé primaire
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     private String title;
 
     @ManyToOne
     @JoinColumn(name = "category_id")
-    private Category category;
+    private Category category;  // ManyToOne avec Category
 
-    @OneToMany(mappedBy = "media")
-    private List<MediaThemeAssociation> themeAssociations;
+    @ManyToMany
+    @JoinTable(
+            name = "media_theme",
+            joinColumns = @JoinColumn(name = "media_id"),
+            inverseJoinColumns = @JoinColumn(name = "theme_id")
+    )
+    private List<Theme> themes;  // ManyToMany avec Theme
 
     private Integer rating;
     private String description;
     private String photoUrl;
     private String releaseDate;
 
-    @JsonManagedReference
-    @OneToMany(mappedBy = "media")
-    private List<MediaActorAssociation> actorAssociations;
-
     private String director;
     private String productionCompany;
     private String categoryAge;
     private String language;
 
+    @JsonManagedReference
+    @OneToMany(mappedBy = "media")
+    private List<MediaActorAssociation> actorAssociations;
+
     @OneToMany(mappedBy = "media")
     private List<MediaNewsAssociation> newsAssociations;
-
-    public Media(Long id, String title, Integer rating, String description, String photoUrl, String releaseDate) {
-        this.id = id;
-        this.title = title;
-        this.rating = rating;
-        this.description = description;
-        this.photoUrl = photoUrl;
-        this.releaseDate = releaseDate;
-    }
 }

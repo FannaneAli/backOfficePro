@@ -12,6 +12,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/episodes")
+@CrossOrigin(origins = "http://localhost:4200")
 public class EpisodeController {
 
     private final EpisodeOrchestration episodeOrchestration;

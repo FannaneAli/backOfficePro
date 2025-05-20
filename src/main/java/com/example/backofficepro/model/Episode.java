@@ -23,9 +23,9 @@ public class Episode {
     private String photoUrl;        // L'URL de la photo de l'épisode
     private Integer duration;       // La durée de l'épisode
     private String videoUrl;        // L'URL de la vidéo de l'épisode
-    private Integer seasonNumber;   // ✅ Remplacement de `Season` par `seasonNumber`
+    private Integer seasonNumber;   // Numéro de la saison
 
-    @ManyToOne // ✅ Ajout de la relation avec TVShow
-    @JoinColumn(name = "tv_show_id") // ✅ Ajout de la clé étrangère
-    private TVShow tvShow;
+    @ManyToOne
+    @JoinColumn(name = "tv_show_id") // Relation Many-to-One avec TVShow
+    private TVShow tvShow;  // Chaque épisode appartient à un TVShow
 }

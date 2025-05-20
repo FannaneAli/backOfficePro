@@ -11,9 +11,10 @@ import java.util.List;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@DiscriminatorValue("TV_SHOW") // ✅ Ajout pour spécifier le type dans la base
+@DiscriminatorValue("TV_SHOW")
 public class TVShow extends Media {
 
-    @OneToMany(mappedBy = "tvShow", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Episode> episodes;
+    @OneToMany(mappedBy = "tvShow", cascade = CascadeType.ALL, orphanRemoval = false)
+    private List<Episode> episodes;  // Relation One-to-Many avec Episode
+
 }

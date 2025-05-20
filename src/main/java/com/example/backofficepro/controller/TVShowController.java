@@ -7,9 +7,11 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/tv-shows")
+@CrossOrigin(origins = "http://localhost:4200")
 public class TVShowController {
 
     private final TVShowOrchestration tvShowOrchestration;
@@ -28,9 +30,16 @@ public class TVShowController {
     // Récupérer toutes les séries TV
     @GetMapping
     public ResponseEntity<List<TVShowDTO>> getAllTVShows() {
-        List<TVShowDTO> tvShows = tvShowOrchestration.getTVShowsByTitle("");
+        List<TVShowDTO> tvShows = tvShowOrchestration.getTVShowsByTitle("").stream()
+                .map(tvShowDTO -> {
+                    tvShowDTO.setCategoryName(tvShowDTO.getCategoryName());
+                    return tvShowDTO;
+                })
+                .collect(Collectors.toList());
+
         return ResponseEntity.ok(tvShows);
     }
+
 
     // Créer une nouvelle série TV
     @PostMapping

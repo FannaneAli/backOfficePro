@@ -10,6 +10,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/actors")
+@CrossOrigin(origins = "http://localhost:4200")
 public class ActorController {
 
     private final ActorOrchestration actorOrchestration;

@@ -8,9 +8,11 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/tv-movies")
+@CrossOrigin(origins = "http://localhost:4200")
 public class TVMovieController {
 
     private final TVMovieOrchestration tvMovieOrchestration;
@@ -29,9 +31,16 @@ public class TVMovieController {
     // Récupérer tous les films TV
     @GetMapping
     public ResponseEntity<List<TVMovieDTO>> getAllTVMovies() {
-        List<TVMovieDTO> tvMovies = tvMovieOrchestration.getTVMoviesByTitle("");
+        List<TVMovieDTO> tvMovies = tvMovieOrchestration.getTVMoviesByTitle("").stream()
+                .map(tvMovieDTO -> {
+                    tvMovieDTO.setCategoryName(tvMovieDTO.getCategoryName()); // ✅ Assure que `categoryName` est bien rempli
+                    return tvMovieDTO;
+                })
+                .collect(Collectors.toList());
+
         return ResponseEntity.ok(tvMovies);
     }
+
 
     // Créer un nouveau film TV
     @PostMapping

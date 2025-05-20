@@ -21,8 +21,8 @@ public class Category {
     private String name;
     private String description;
 
-    @OneToMany(mappedBy = "category")  // Le mappedBy fait référence à 'category' dans Media (TVShow, TVMovie)
-    private List<Media> mediaList;  // Changez ici en List<Media>
+    @OneToMany(mappedBy = "category")  // Relation One-to-Many avec Media
+    private List<Media> mediaList;
 
     public Category(Long id, String name, String description) {
         this.id = id;

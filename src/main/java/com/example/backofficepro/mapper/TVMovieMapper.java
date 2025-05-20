@@ -1,6 +1,7 @@
 package com.example.backofficepro.mapper;
 
 import com.example.backofficepro.dto.TVMovieDTO;
+import com.example.backofficepro.model.Category;
 import com.example.backofficepro.model.TVMovie;
 import org.mapstruct.Mapper;
 import org.mapstruct.Builder;
@@ -8,18 +9,8 @@ import org.mapstruct.Mapping;
 import java.util.List;
 
 /**
- * Mapper spécialisé pour les téléfilms et films TV.
- *
- * <p>Convertit les spécificités techniques des téléfilms :
- * <ul>
- *   <li>Métadonnées de diffusion (URLs, durée, partie)</li>
- *   <li>Informations de production complètes</li>
- * </ul>
- *
- * @feature Mapping des URLs média (trailer, film)
+ * Mapper pour les films TV.
  */
-
-
 @Mapper(componentModel = "spring", builder = @Builder(disableBuilder = true))
 public interface TVMovieMapper {
 
@@ -33,6 +24,12 @@ public interface TVMovieMapper {
     @Mapping(target = "trailerUrl", source = "tvMovie.trailerUrl")
     @Mapping(target = "movieUrl", source = "tvMovie.movieUrl")
     @Mapping(target = "part", source = "tvMovie.part")
+    @Mapping(target = "director", source = "tvMovie.director")
+    @Mapping(target = "productionCompany", source = "tvMovie.productionCompany")
+    @Mapping(target = "categoryAge", source = "tvMovie.categoryAge")
+    @Mapping(target = "language", source = "tvMovie.language")
+    @Mapping(target = "categoryId", source = "tvMovie.category.id")  // ✅ Ajout de l’ID de la catégorie
+    @Mapping(target = "categoryName", source = "tvMovie.category.name")  // ✅ Ajout du nom de la catégorie
     TVMovieDTO toDTO(TVMovie tvMovie);
 
     @Mapping(target = "id", source = "tvMovieDTO.id")
@@ -45,7 +42,22 @@ public interface TVMovieMapper {
     @Mapping(target = "trailerUrl", source = "tvMovieDTO.trailerUrl")
     @Mapping(target = "movieUrl", source = "tvMovieDTO.movieUrl")
     @Mapping(target = "part", source = "tvMovieDTO.part")
+    @Mapping(target = "director", source = "tvMovieDTO.director")
+    @Mapping(target = "productionCompany", source = "tvMovieDTO.productionCompany")
+    @Mapping(target = "categoryAge", source = "tvMovieDTO.categoryAge")
+    @Mapping(target = "language", source = "tvMovieDTO.language")
+    @Mapping(target = "category", source = "tvMovieDTO.categoryId")  // ✅ Mapping vers l’entité `Category`
     TVMovie toEntity(TVMovieDTO tvMovieDTO);
 
     List<TVMovieDTO> toDTOList(List<TVMovie> tvMovies);
+
+    // ✅ Custom mapping de `categoryId` vers `Category`
+    default Category map(Long categoryId) {
+        if (categoryId != null) {
+            Category category = new Category();
+            category.setId(categoryId);
+            return category;
+        }
+        return null;
+    }
 }

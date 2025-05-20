@@ -8,6 +8,7 @@ import com.example.backofficepro.service.ITVMovieService;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -26,11 +27,14 @@ import java.util.Optional;
 @Service
 public class TVMovieServiceImpl implements ITVMovieService {
 
-    @Autowired
-    private TVMovieRepository tvMovieRepository;
+    private final TVMovieRepository tvMovieRepository;
+    private final TVMovieMapper tvMovieMapper;  // Injection par constructeur
 
-    @Autowired
-    private TVMovieMapper tvMovieMapper; // Injection du mapper
+    // Constructeur
+    public TVMovieServiceImpl(TVMovieRepository tvMovieRepository, @Qualifier("TVMovieMapperImpl") TVMovieMapper tvMovieMapper) {
+        this.tvMovieRepository = tvMovieRepository;
+        this.tvMovieMapper = tvMovieMapper;
+    }
 
     @Override
     public TVMovieDTO getTVMovieById(Long id) {
